@@ -12,22 +12,10 @@ def read_excel_file(file_path):
     try:
         xlsx_file_data = pd.read_excel(file_path)
 
-    except FileNotFoundError:
-        return "Не удалось считать файл"
+    except Exception:
+        return None
 
     return xlsx_file_data
-
-
-def get_user_date():
-    """Возвращает дату пользователя в формате datetime"""
-    year = int(input("Введите год: "))
-    month = int(input("Введите месяц: "))
-    day = int(input("Введите день: "))
-    hour = int(input("Введите час: "))
-    minute = int(input("Введите минуты: "))
-    second = int(input("Введите секунды: "))
-
-    return datetime(year, month, day, hour, minute, second)
 
 
 def greeting(date_info):
@@ -42,12 +30,8 @@ def greeting(date_info):
         return "Добрый вечер"
 
 
-# print(greeting(get_user_date()))
-
-
 def get_date_range(user_date):
     """Возвращает диапозон дат с начала месяца до указанной даты"""
-    # date = datetime.strptime(user_date, "%")
     start_date = datetime(user_date.year, user_date.month, 1)
     end_date = user_date
 
@@ -78,9 +62,6 @@ def get_exchange_rates():
             courses[currency] = result["rates"]["RUB"]
 
     return courses
-
-
-# print(get_exchange_rates())
 
 
 def get_stock_data():
@@ -118,25 +99,22 @@ def get_card_info(transactions_info):
     """Возвращает информацию о карте"""
     filtered_transactions_by_spent: pd.DataFrame = transactions_info.loc[
         transactions_info["Сумма операции"] < 0]
-    group_by_card = filtered_transactions_by_spent.groupby(["Номер карты"]).agg({"Сумма платежа": "sum"})
 
-    print(group_by_card)
+    group_by_card = filtered_transactions_by_spent.groupby(["Номер карты"]).agg({"Сумма платежа": "sum"})
 
     card_info_list = []
     for index, row in group_by_card.iterrows():
         card_info_list.append({
             "last_digits": index[1:],
-            "total_spent": round(row["Сумма платежа"], 2),
-            "cashback": round(row["Сумма платежа"] * (-0.01), 2)
+            "total_spent": abs(round(row["Сумма платежа"], 2)),
+            "cashback": abs(round(row["Сумма платежа"] * 0.01, 2))
         })
+
     return card_info_list
 
 
-get_card_info(read_excel_file("..\\data\\operations.xlsx"))
-
-
 def get_top_transactions(transactions_info):
-    """Возвращает топ транзакции"""
+    """Возвращает топ транзакции по сумме платежа"""
     sorted_by_spent = transactions_info.sort_values("Сумма платежа", ascending=True)
 
     top_transactions_list = []
