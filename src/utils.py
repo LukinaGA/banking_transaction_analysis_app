@@ -33,9 +33,8 @@ def greeting(date_info):
 def get_date_range(user_date):
     """Возвращает диапозон дат с начала месяца до указанной даты"""
     start_date = datetime(user_date.year, user_date.month, 1)
-    end_date = user_date
 
-    date_range = pd.date_range(min(start_date, end_date), max(start_date, end_date)).strftime('%d.%m.%Y').tolist()
+    date_range = pd.date_range(min(start_date, user_date), max(start_date, user_date)).strftime('%d.%m.%Y').tolist()
 
     return date_range
 

@@ -1,6 +1,5 @@
 import re
 from src.utils import read_excel_file
-import json
 
 
 def simple_search(transactions_info, search_word):
@@ -18,6 +17,4 @@ def simple_search(transactions_info, search_word):
 
 
 if __name__ == '__main__':
-    data = simple_search(read_excel_file("..\\data\\operations.xlsx"), "перевод")
-
-    print(json.dumps(data, indent=4, ensure_ascii=False))
+    simple_search(read_excel_file("..\\data\\operations.xlsx"), "перевод")
