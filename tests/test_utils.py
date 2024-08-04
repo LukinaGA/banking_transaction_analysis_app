@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import pytest
 from src.utils import *
 from unittest.mock import patch, Mock
@@ -20,7 +20,10 @@ def test_read_excel_file_incorrect_path():
 def test_get_date_info_correct_format(date_info, expected):
     assert get_date_info(date_info) == expected
 
-
+# @patch("src.utils.datetime")
+# def test_get_greeting(mock_datetime):
+#     mock_datetime.now.return_value = datetime.datetime(2022, 1, 1, 5, 59, 59)
+#     assert get_greeting() == "Доброй ночи"
 # @pytest.mark.parametrize("date_info, expected", [("2000-13-6 12:0:0", datetime.now()),
 #                                         ("2024-12-12 0:59", datetime.now())])
 # def test_get_date_info_incorrect_format(date_info, expected):
@@ -84,19 +87,19 @@ def test_get_stock_data_status_code_not_200(mock_get):
                                 "TSLA": "No data"}
 
 
-# def test_filter_transactions_by_date_range(transactions_info_for_test):
-#     assert filter_transactions_by_date_range(transactions_info_for_test, ["01.01.2018", "02.01.2018"]) == pd.DataFrame(
+# def test_filter_transactions_by_date_range(transactions_info_for_utils):
+#     assert filter_transactions_by_date_range(transactions_info_for_utils, ["01.01.2018", "02.01.2018"]) == pd.DataFrame(
 #         {'Дата платежа': '02.01.2018', 'Номер карты': '*7197', 'Сумма платежа': -21.0, 'Категория': 'Красота',
 #          'Описание': 'OOO Balid'})
 
 
-def test_get_card_info(transactions_info_for_test):
-    assert get_card_info(transactions_info_for_test) == [
+def test_get_card_info(transactions_info_for_utils):
+    assert get_card_info(transactions_info_for_utils) == [
         {"last_digits": "7197", "total_spent": 3800.0, "cashback": 38.0}]
 
 
-def test_get_top_transactions(transactions_info_for_test):
-    assert get_top_transactions(transactions_info_for_test) == [
+def test_get_top_transactions(transactions_info_for_utils):
+    assert get_top_transactions(transactions_info_for_utils) == [
         {"date": "05.02.2018", "amount": 2500.0, "category": "Супермаркеты", "description": "Магнит"},
         {"date": "05.03.2018", "amount": 1300.0, "category": "Здоровье", "description": "Линзомат ТЦ Юность"},
         {"date": "02.01.2018", "amount": 21.0, "category": "Красота", "description": "OOO Balid"}]

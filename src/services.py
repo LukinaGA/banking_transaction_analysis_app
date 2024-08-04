@@ -1,11 +1,10 @@
 import re
 from src.utils import read_excel_file
-
+from config import TRANSACTIONS
 
 def simple_search(transactions_info, search_word):
     """Возвращает список транзакций с заданным описанием"""
     found_transactions = []
-    # print(transactions_info.to_dict(orient="records"))
     for transaction in transactions_info.to_dict(orient="records"):
         if re.search(search_word, transaction.get("Описание"), flags=re.IGNORECASE):
             found_transactions.append(transaction)
@@ -17,4 +16,4 @@ def simple_search(transactions_info, search_word):
 
 
 if __name__ == '__main__':
-    simple_search(read_excel_file("..\\data\\operations.xlsx"), "перевод")
+    print(simple_search(read_excel_file(TRANSACTIONS), "перевод"))
