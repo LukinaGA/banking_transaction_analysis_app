@@ -1,36 +1,67 @@
-from src.utils import *
-from datetime import datetime
+from src.reports import spending_by_category
+from src.services import simple_search
+from src.utils import get_date_info
+from src.views import get_main_page_info
 
+# приветствие
+print(
+    """Здравствуйте!
+Для получения информации, пожалуйста, введите дату в формате ГГГГ-ММ-ДД ЧЧ:ММ:СС"""
+)
+# запрос даты
+date = (
+    f"{int(input("Год: "))}-{int(input("Месяц: "))}-{int(input("День: "))} "
+    f"{int(input("Часы: "))}:{int(input("Минуты: "))}:{int(input("Секунды: "))}"
+)
 
-def main():
-    transactions_info = read_excel_file("..\\data\\operations.xlsx")
+repit = "д"
+# выбор действия
+while repit == "д":
+    print("\nКакую информацию вы хотите получить?\n")
+    print("1. Информацию с главной страницы")
+    print("2. Результаты поиска по категории и описанию")
+    print("3. Отчёт трат по выбранной категории")
+    print("4. Всю вышеперечисленную информацию\n")
 
     try:
-        date = datetime.strptime(input("Введите дату (ГГГГ ММ ДД ЧЧ ММ СС): "), "%Y %m %d %H %M %S")
-    except Exception:
-        date_default = (f"{transactions_info["Дата платежа"][0]} "
-                        f"{datetime.now().hour}.{datetime.now().minute}.{datetime.now().second}")
-        date = datetime.strptime(date_default, "%d.%m.%Y %H.%M.%S")
-        print(f"Неверный формат даты, выбрана дата по умолчанию: {date}")
+        answer = int(input("Введите цифру: \n"))
+    except ValueError:
+        print("Некорректный ввод. Выбран пункт 4\n")
+        answer = 4
 
-    date_range = get_date_range(date)
+    # получение информации исходя из запроса пользователя
+    if answer == 1:
+        get_main_page_info(date)
 
-    filtered_transactions_by_date_range = filter_transactions_by_date_range(transactions_info, date_range)
+    elif answer == 2:
+        word = input("Введите слово для поиска: ").strip()
+        simple_search(word)
 
-    exchange_rates = []
-    for currency, rate in get_exchange_rates().items():
-        exchange_rates.append({"currency": currency, "rate": rate})
+    elif answer == 3:
+        category = input("Введите назавание категории: ").strip().capitalize()
+        date_info = get_date_info(date)
+        spending_by_category(category, date=date_info)
 
-    stock_data = []
-    for stock, price in get_stock_data().items():
-        stock_data.append({"stock": stock, "price": price})
+    elif answer == 4:
+        get_main_page_info(date)
+        word = input("Введите слово для поиска по категории и описанию: ").strip()
+        simple_search(word)
+        category = input("Введите назавание категории: ").strip().capitalize()
+        date_info = get_date_info(date)
+        spending_by_category(category, date=date_info)
 
-    main_page = {
-        "greeting": greeting(date),
-        "cards": get_card_info(filtered_transactions_by_date_range),
-        "top_transactions": get_top_transactions(filtered_transactions_by_date_range)[:5],
-        "currency_rates": exchange_rates,
-        "stock_prices": stock_data
-    }
+    else:
+        print("Некорректный ввод. Выбран пункт 4\n")
+        get_main_page_info(date)
+        word = input("Введите слово для поиска по категории и описанию: ").strip()
+        simple_search(word)
+        category = input("Введите назавание категории: ").strip().capitalize()
+        date_info = get_date_info(date)
+        spending_by_category(category, date=date_info)
 
-    return main_page
+    repit = input("Хотите получить другую информацию? (д/н): \n").strip().lower()
+
+    if repit == "д":
+        continue
+
+print("До свидания!")
