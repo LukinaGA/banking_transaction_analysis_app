@@ -20,21 +20,21 @@ def test_send_to_file():
 
 
 def test_spending_by_category(transactions_info_for_reports):
-    spending_by_category(transactions_info_for_reports, "Красота", date=datetime(2022, 2, 1))
+    spending_by_category("Красота", date=datetime(2022, 2, 1), transactions_info=transactions_info_for_reports)
     res = pd.read_excel(os.path.join(DATA_DIR, "spending_by_category.xlsx"), index_col=0).to_dict(orient="records")
     expected = [{"Красота": -20800.0}]
     assert res == expected
 
 
-def test_spending_by_category_no_data(transactions_info_for_reports):
-    spending_by_category(transactions_info_for_reports, "Красота")
+def test_spending_by_category_no_date(transactions_info_for_reports):
+    spending_by_category("Красота", transactions_info=transactions_info_for_reports)
     res = pd.read_excel(os.path.join(DATA_DIR, "spending_by_category.xlsx"), index_col=0).to_dict(orient="records")
     expected = [{"Красота": 0}]
     assert res == expected
 
 
-def test_spending_by_category_no_category(transactions_info_for_reports):
-    spending_by_category(transactions_info_for_reports, "Госуслуги")
+def test_spending_by_category_no_valid_category(transactions_info_for_reports):
+    spending_by_category("Госуслуги", transactions_info=transactions_info_for_reports)
     res = pd.read_excel(os.path.join(DATA_DIR, "spending_by_category.xlsx"), index_col=0).to_dict(orient="records")
     expected = [{"Госуслуги": 0}]
     assert res == expected
