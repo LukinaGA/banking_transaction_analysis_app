@@ -28,7 +28,7 @@ def read_excel_file(file_path):
 
     except Exception:
         logger.error("Ошибка чтения файла")
-        return {}
+        return pd.DataFrame()
     logger.info("Успешное чтение файла")
     return xlsx_file_data
 
@@ -89,7 +89,8 @@ def get_exchange_rates():
 
     logger.debug("Получение курса валют")
     courses = {}
-    for currency in user_settings["user_currencies"]:
+
+    for currency in user_settings.get("user_currencies"):
         url = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base={currency}"
         headers = {"apikey": api_key}
         response = requests.get(url, headers=headers)
@@ -117,7 +118,7 @@ def get_stock_data():
     user_settings = get_user_settings()
     logger.debug("Получение стоимости акции")
     stocks = {}
-    for stock in user_settings["user_stocks"]:
+    for stock in user_settings.get("user_stocks"):
         url = f"https://financialmodelingprep.com/api/v3/quote-short" f"/{stock}?apikey={api_key}"
 
         response = requests.get(url)
@@ -137,7 +138,7 @@ def get_stock_data():
 def filter_transactions_by_date_range(transactions_info, date_range):
     """Фильтрует транзакции с начала месяца до указанной даты"""
     logger.info("Запуск функции filter_transactions_by_date_range()")
-    filtered_transactions_by_date_range: pd.DataFrame = transactions_info.loc[
+    filtered_transactions_by_date_range: pd.DataFrame = transactions_info[
         transactions_info["Дата платежа"].isin(date_range)
     ]
 

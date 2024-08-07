@@ -1,10 +1,16 @@
 import pandas as pd
+import os
+import json
 
 from src.services import simple_search
+from config import DATA_DIR
 
 
 def test_simple_search(transactions_info_for_services):
-    assert simple_search(transactions_info_for_services, "перевод") == [
+    simple_search("перевод", transactions_info=transactions_info_for_services)
+    with open(os.path.join(DATA_DIR, "simple_search.json"), encoding="utf-8") as file:
+        data = json.load(file)
+    assert data == [
         {
             "Дата платежа": "31.12.2021",
             "Номер карты": "*1234",
@@ -23,8 +29,14 @@ def test_simple_search(transactions_info_for_services):
 
 
 def test_simple_search_not_found(transactions_info_for_services):
-    assert simple_search(transactions_info_for_services, "поиск") == []
+    simple_search("поиск", transactions_info=transactions_info_for_services)
+    with open(os.path.join(DATA_DIR, "simple_search.json"), encoding="utf-8") as file:
+        data = json.load(file)
+    assert data == []
 
 
 def test_simple_search_empty_data():
-    assert simple_search(pd.DataFrame(), "перевод") == []
+    simple_search("перевод", transactions_info=pd.DataFrame())
+    with open(os.path.join(DATA_DIR, "simple_search.json"), encoding="utf-8") as file:
+        data = json.load(file)
+    assert data == []
