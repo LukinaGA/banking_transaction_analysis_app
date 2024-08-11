@@ -15,8 +15,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("services")
 
-transactions = read_excel_file(TRANSACTIONS)
-def simple_search(search_word, transactions_info=transactions):
+transactions_for_search = read_excel_file(TRANSACTIONS)
+def simple_search(search_word, transactions_info=transactions_for_search):
     """Записывает список транзакций с заданным описанием в файл simple_search.json"""
     logger.info("Запуск функции simple_search()")
 
