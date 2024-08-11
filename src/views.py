@@ -14,12 +14,10 @@ from src.utils import (
     read_excel_file,
 )
 
-
-def get_main_page_info(date_info):
+transactions = read_excel_file(TRANSACTIONS)
+def get_main_page_info(date_info, transactions_info = transactions):
     """Записывает информацию для главной страницы в файл main_page.json"""
     date = get_date_info(date_info)
-
-    transactions_info = read_excel_file(TRANSACTIONS)
 
     date_range = get_date_range(date)
 
